@@ -20,6 +20,9 @@ Accompagner l’utilisateur sur la durée dans la compréhension, la modélisati
 - Le livrable envisagé est une simulation en C, notamment C/POSIX (ou autre variante C), avec interface graphique dans un langage au choix.
 - L’utilisateur souhaite travailler en collaboration, progressivement, en comprenant et en construisant le modèle plutôt que de recevoir uniquement une solution toute faite.
 - Les détails des branches, voies, mouvements autorisés, règles de priorité et exigences du professeur restent à recueillir. Ne pas les inventer comme des faits.
+- Circulation à droite (volant à gauche) : indiqué par l’utilisateur ; le véhicule le plus proche d’un piéton qui traverse vient de sa gauche.
+- Aucune préemption possible d’un véhicule engagé : on ne le retire pas pour le déposer ailleurs. L’utilisateur peut écrire « appréhension » par dictée vocale pour « préemption » ; employer « préemption » dans les documents.
+- L’utilisateur veut réutiliser ses acquis (automates, barycentres, topologie, Banach, mesure et intégration, géométrie, algèbre multilinéaire) et a entendu parler des chaînes de Markov sur des états matriciels. Voir la boîte à outils pour leur place réelle.
 
 ## Méthode de travail
 
@@ -30,6 +33,7 @@ Accompagner l’utilisateur sur la durée dans la compréhension, la modélisati
 5. **Représenter explicitement les cas groupés et prioritaires.** Un convoi indivisible est une seule requête composite/non préemptible, dont le passage prend le temps nécessaire à la sortie de son dernier élément. Une demande d’urgence déclenche une séquence sûre de changement de phase; elle ne coupe pas un processus déjà engagé. Lire [modèle global : convois, urgences et interblocage](references/modele-global.md) pour ce volet.
 6. **Relier preuve et implémentation.** Traduire chaque état, transition et invariant en mécanismes C/POSIX. Puis définir les scénarios de simulation qui illustrent fonctionnement normal, conflits, forte charge et cas limites. Ne pas prétendre qu’une simulation seule prouve les propriétés générales.
 7. **Avancer de façon pédagogique.** Expliquer les analogies et les choix en français clair, expliciter les hypothèses, garder une trace des décisions et des questions ouvertes, et inviter l’utilisateur à corriger le modèle avec les consignes de son cours.
+8. **Choisir les outils mathématiques par leur utilité.** Lire la [boîte à outils mathématique, non-préemption et Markov](references/outils-mathematiques-et-preemption.md) : rôle réel de chaque outil, conditions de Coffman, tubes espace-temps, convoi, urgences, chaînes de Markov et MDP, solution globale du problème des philosophes.
 
 ## Garde-fous de modélisation
 
@@ -41,7 +45,13 @@ Accompagner l’utilisateur sur la durée dans la compréhension, la modélisati
 - Traiter les véhicules d’urgence par une classe/priorité paramétrée et une préemption sûre des phases de signalisation, jamais par interruption physique d’un processus déjà engagé dans une zone de conflit.
 - Le problème des philosophes se transpose à des processus qui demandent plusieurs zones : éviter qu’ils prennent une zone puis attendent les suivantes. Favoriser un arbitre central accordant atomiquement l’ensemble des zones du mouvement, avec espace de sortie réservé.
 - Présenter « élégant » comme une demande de modèle cohérent, minimal et démontrable, pas comme une promesse de résultat exceptionnel ni comme une formalité mathématique décorative.
+- Sans préemption, l’interblocage se traite par prévention ou évitement, jamais par « détection puis retrait d’un véhicule ». Briser la détention-attente (réservation tout-ou-rien) ou l’attente circulaire (ordre total), et énoncer les hypothèses de la preuve.
+- Les chaînes de Markov prédisent des lois de probabilité et optimisent des performances; elles ne démontrent ni la sûreté ni l’absence d’interblocage. La sûreté se garantit sur le support de la matrice (un automate) ou par un filtre déterministe. Ne pas présenter Markov comme un moyen de préempter.
+- N’employer topologie, Banach, mesure ou barycentre que là où ils démontrent ou calculent quelque chose (liste dans la boîte à outils); ne pas les ajouter par décor.
+- Canne du non-voyant : c’est une demande, pas un verrou. Le regard à gauche/droite est un test de créneau (avec marge, à cause du délai entre observation et action). Prévoir un modèle coopératif (preuve de sûreté) et un modèle avec processus fautif (injection de faute pour le refus de priorité).
+- Convoi : un seul tube espace-temps, prolongation de dégagement bornée; si elle dépasse la borne, le convoi attend en bloc. Éviter la famine des grosses requêtes par un ordre d’arrivée entre requêtes en conflit.
+- Urgences : préemption du plan de signalisation, héritage de priorité aux véhicules qui précèdent l’urgence dans la même voie, borne de latence à démontrer, plafond contre la famine des ordinaires.
 
 ## Continuité
 
-Consulter [notes de continuité](references/continuite.md) pour le prompt récapitulatif, les échanges établis et les questions encore ouvertes. Mettre ces notes à jour quand l’utilisateur donne de nouvelles règles, hypothèses ou décisions structurantes.
+Consulter [notes de continuité](references/continuite.md) pour le prompt récapitulatif, les échanges établis et les questions encore ouvertes, et la section « Décisions et questions ouvertes » de la [boîte à outils](references/outils-mathematiques-et-preemption.md). Mettre ces notes à jour quand l’utilisateur donne de nouvelles règles, hypothèses ou décisions structurantes.
